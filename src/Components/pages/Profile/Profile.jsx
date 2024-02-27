@@ -9,8 +9,12 @@ import profileImg from "../../../assets/img/profile.jpg";
 import { discoverActions } from "../../../data";
 
 import EditProfile from "./EditProfile";
+import { Blog } from "../../Context/Context";
+import { useParams } from "react-router-dom";
 
 function Profile() {
+  const {allUsers} = Blog();
+  const {userId} = useParams();
   const activity = [
     { title: "Home", comp: ProfileHome },
     { title: "Lists", comp: ProfileList },
@@ -21,13 +25,15 @@ function Profile() {
   const [modal, setModal] = useState(false);
 
   const [editModal, setEditModal] = useState(false);
+  const getAllUsersData = allUsers.find((user) => user.id === userId);
+  console.log("all data", getAllUsersData);
   return (
     <section className="size flex gap-[4rem] relative ">
       {/* User activity */}
       <div className="mt-[9rem] flex-[2]">
         <div className="flex items-end gap-4">
           <h2 className="text-3xl sm:text-5xl font-bold capitalize">
-            Ali Raza
+            {getAllUsersData?.username || "Ali Raza"}
           </h2>
           <p className="text-gray-500 text-xs sm:text-sm">Followers(2)</p>
           <p className="text-gray-500 text-xs sm:text-sm">Following(2)</p>
@@ -48,7 +54,7 @@ function Profile() {
             </div>
           ))}
         </div>
-        <currentActive.comp setEditModal={setEditModal} />
+        <currentActive.comp setEditModal={setEditModal} getAllUsersData={getAllUsersData} />
       </div>
       {/* btn add to close and open side bar */}
       <button
@@ -78,7 +84,7 @@ function Profile() {
           <div className="sticky top-7 flex-col justify-between">
             <img
               className="w-[3.5rem] h-[3.5rem] object-cover rounded-full"
-              src={profileImg}
+              src={getAllUsersData?.userImg || profileImg}
               alt="profile-Img"
             />
             <h2 className="py-2 font-bold capitalize">Ali Raza</h2>
@@ -105,7 +111,7 @@ function Profile() {
         </div>
       </Modal>
       {editModal && (
-        <EditProfile editModal={editModal} setEditModal={setEditModal} />
+        <EditProfile getAllUsersData={getAllUsersData} editModal={editModal} setEditModal={setEditModal} />
       )}
     </section>
   );
